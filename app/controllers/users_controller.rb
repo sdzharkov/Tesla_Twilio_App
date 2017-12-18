@@ -17,7 +17,6 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
     if @user.save
       render json: @user, status: :created, location: @user
     else
@@ -39,12 +38,16 @@ class UsersController < ApplicationController
     @user.destroy
   end
 
+  def print_user(user)
+    "\nID: #{user.id},\nName: #{user.name},\nCreated At: #{user.created_at},\nUpdated at: #{user.updated_at}"
+  end
+
   def create_user(id, name, phone_number)
 
     if !User.exists?(id: id)
       @user = User.new(:id => id, :name => name)
       @user.save
-      send_text(@user.to_json, phone_number)
+      send_text('Created user: ' + print_user(@user), phone_number)
       render json: @user
     else
       response = "User #{id} already exists."
@@ -55,7 +58,7 @@ class UsersController < ApplicationController
   def read_user(id, phone_number)
     if User.exists?(id: id)
       @user = User.find(id)
-      send_text(@user.to_json, phone_number)
+      send_text('Read user: ' + print_user(@user), phone_number)
       render json: @user
     else
       response = "This user does not exist."
@@ -63,6 +66,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # Update user function. If the user doesn't exist, add him to the UnsentMessage table.
   def update_user(id, name, phone_number)
     user_params = {
         id: id,
@@ -73,7 +77,7 @@ class UsersController < ApplicationController
       puts 'User exists'
       @user = User.find(id)
       @user.update(user_params)
-      send_text(@user.to_json, phone_number)
+      send_text('Updated user: ' + print_user(@user), phone_number)
       render json: @user
     else
       unless UnsentMessage.exists?(phone_number: phone_number, entry_id: id)
@@ -87,10 +91,8 @@ class UsersController < ApplicationController
   end
 
   def delete_user(id, phone_number)
-    @user = User.find(id)
-
-    if @user
-      @user.destroy
+    if User.exists?(id)
+      User.find(id).destroy
       response = "User #{id} destroyed."
       send_text(response, phone_number)
     else
@@ -99,6 +101,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # Insert entries given a yes or no command
   def delegate_unsent_messages(request, phone_number)
     if UnsentMessage.exists?(phone_number: phone_number)
       if request == 'yes'
@@ -123,26 +126,27 @@ class UsersController < ApplicationController
     send_text(response, phone_number)
   end
 
+  # Entry point for text, determines where to route the command.
   def text
     phone_number = params[:From]
-    body = params.fetch(:Body, "").downcase
+    body = params.fetch(:Body, "")
 
-    values = body.split("-")
-    if values.length > 1
-      case values[0]
+    instructions = body.split("-")
+    if instructions.length > 1
+      case instructions[0].downcase
       when "create"
-        create_user(values[1], values[2], phone_number)
+        create_user(instructions[1], instructions[2], phone_number)
       when "read"
-        read_user(values[1], phone_number)
+        read_user(instructions[1], phone_number)
       when "update"
-        update_user(values[1], values[2], phone_number)
+        update_user(instructions[1], instructions[2], phone_number)
       when "delete"
-        delete_user(values[1], phone_number)
+        delete_user(instructions[1], phone_number)
       else
         invalid_command(phone_number)
       end
-    elsif values.length == 1 and (values[0] == 'yes' or values[0] == 'no')
-      delegate_unsent_messages(values[0], phone_number)
+    elsif instructions.length == 1 and (instructions[0].downcase == 'yes' or instructions[0].downcase == 'no')
+      delegate_unsent_messages(instructions[0], phone_number)
     else
       invalid_command(phone_number)
     end
