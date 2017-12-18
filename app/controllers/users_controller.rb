@@ -100,17 +100,15 @@ class UsersController < ApplicationController
   end
 
   def delegate_unsent_messages(request, phone_number)
-    puts phone_number, phone_number.sub('+', ' '), UnsentMessage.find(phone_number: ' 9168976607').phone_number
-    if UnsentMessage.exists?(phone_number: phone_number.sub('+', ' '))
-      puts 'here'
+    if UnsentMessage.exists?(phone_number: phone_number)
       if request == 'yes'
-        @entries = UnsentMessage.where(phone_number: phone_number.sub('+', ' '))
+        @entries = UnsentMessage.where(phone_number: phone_number)
         @entries.each do |entry|
           create_user(entry.entry_id, entry.entry_body, phone_number)
           entry.destroy
         end
       else
-        @entries = UnsentMessage.where(phone_number: phone_number.sub('+', ' '))
+        @entries = UnsentMessage.where(phone_number: phone_number)
         @entries.each do |entry|
           entry.destroy
         end
