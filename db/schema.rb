@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171218045309) do
+ActiveRecord::Schema.define(version: 20171218090402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "message_queues", force: :cascade do |t|
+    t.string "phone"
+    t.integer "entry_id"
+    t.text "entry_body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "unsent_messages", force: :cascade do |t|
+    t.string "phone_number"
+    t.integer "entry_id"
+    t.text "entry_body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"

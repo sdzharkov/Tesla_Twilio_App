@@ -1,0 +1,2 @@
+class UnsentMessage < ApplicationRecord
+end

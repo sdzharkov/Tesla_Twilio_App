@@ -40,9 +40,9 @@ class UsersController < ApplicationController
   end
 
   def create_user(id, name, phone_number)
-    @user = User.new(:id => id, :name => name)
 
-    if !User.exists?(:id => id)
+    if !User.exists?(id: id)
+      @user = User.new(:id => id, :name => name)
       @user.save
       send_text(@user.to_json, phone_number)
       render json: @user
@@ -53,9 +53,8 @@ class UsersController < ApplicationController
   end
 
   def read_user(id, phone_number)
-    @user = User.find(id)
-    puts @user
-    if @user
+    if User.exists?(id: id)
+      @user = User.find(id)
       send_text(@user.to_json, phone_number)
       render json: @user
     else
@@ -70,12 +69,20 @@ class UsersController < ApplicationController
         name: name
     }
 
-    @user = User.find(id)
-    if @user.update(user_params)
+    if User.exists?(id: id)
+      puts 'User exists'
+      @user = User.find(id)
+      @user.update(user_params)
       send_text(@user.to_json, phone_number)
       render json: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      unless UnsentMessage.exists?(phone_number: phone_number, entry_id: id)
+        @unsent_message = UnsentMessage.new(phone_number: phone_number, entry_id: id, entry_body: name)
+        @unsent_message.save
+      end
+
+      response = "User #{id} does not exist. If you would like to add him, respond with a 'yes', otherwise 'no'."
+      send_text(response, phone_number)
     end
   end
 
@@ -87,18 +94,41 @@ class UsersController < ApplicationController
       response = "User #{id} destroyed."
       send_text(response, phone_number)
     else
-      response = "This user does not exist."
+      response = "User #{id} does not exist."
       send_text(response, phone_number)
     end
   end
 
+  def delegate_unsent_messages(request, phone_number)
+
+    if UnsentMessage.exists?(phone_number: phone_number.sub('+', ' '))
+      if request == 'yes'
+        @entries = UnsentMessage.where(phone_number: phone_number.sub('+', ' '))
+        @entries.each do |entry|
+          create_user(entry.entry_id, entry.entry_body, phone_number)
+          entry.destroy
+        end
+      else
+        @entries = UnsentMessage.where(phone_number: phone_number.sub('+', ' '))
+        @entries.each do |entry|
+          entry.destroy
+        end
+      end
+    else
+      invalid_command(phone_number: phone_number)
+    end
+  end
+
+  def invalid_command(phone_number)
+    response = "Incorrect command. The following commands are permitted: create, read, update, delete. Example:\n ‘create–1234–Nikola Tesla’,\n ‘read–1234’,\n ‘update–1234–Tesla Motors’,\n ‘delete–1234’\n"
+    send_text(response, phone_number)
+  end
+
   def text
-    puts params
     phone_number = params[:From]
     body = params.fetch(:Body, "").downcase
 
     values = body.split("-")
-    puts values
     if values.length > 1
       case values[0]
       when "create"
@@ -110,12 +140,12 @@ class UsersController < ApplicationController
       when "delete"
         delete_user(values[1], phone_number)
       else
-        response = "Incorrect command. Please insert the commands: create, read, update, delete"
-        send_text(response, phone_number)
+        invalid_command(phone_number)
       end
+    elsif values.length == 1 and (values[0] == 'yes' or values[0] == 'no')
+      delegate_unsent_messages(values[0], phone_number)
     else
-      response = "Incorrect format."
-      send_text(response, phone_number)
+      invalid_command(phone_number)
     end
   end
 
