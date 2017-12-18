@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Rails tesla_twilio: development" uuid="6593752b-b1e8-4537-91c2-d2f166796b05">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <first-sync>true</first-sync>
+      <user-name>tesla</user-name>
+    </data-source>
+    <data-source name="Rails tesla_twilio: production" uuid="1842d34a-4553-4bbe-bb15-4a71b71441d3">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <user-name>tesla_twilio</user-name>
+    </data-source>
+    <data-source name="Rails tesla_twilio: test" uuid="cb4f7dea-aa33-497e-b2db-fcc028932812">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+    </data-source>
+  </component>
+</project>
