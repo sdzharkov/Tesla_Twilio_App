@@ -68,8 +68,8 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
-  config.config.web_socket_server_url = "wss://tesla-twilio-app.herokuapp.com/cable"
-  config.config.action_cable.allowed_request_origins = ['https://tesla-twilio-app.herokuapp.com', 'https://tesla-twilio-frontend.herokuapp.com/']
+  config.web_socket_server_url = "wss://tesla-twilio-app.herokuapp.com/cable"
+  config.action_cable.allowed_request_origins = ['https://tesla-twilio-app.herokuapp.com', 'https://tesla-twilio-frontend.herokuapp.com/']
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
