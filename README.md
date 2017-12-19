@@ -2,7 +2,7 @@
 
 Provide realtime CRUD commands to the server with texts using the Twilio API, while displaying the results with websockets to the React frontend. 
 
-Text a Twilio commands with the following type of commands and watch then appear on the frontend.
+Text a Twilio commands with the following type of commands and watch then appear on the [frontend](https://tesla-twilio-frontend.herokuapp.com/).
 
 Example CRUD Commands to text: 
 ‘create – 1234 – Nikola Tesla’, 
@@ -10,7 +10,7 @@ Example CRUD Commands to text:
 ‘update – 1234 – Tesla Motors’, 
 ‘delete – 1234’
 
-The frontend code could be found here: https://github.com/sdzharkov/Tesla_Twilio_Frontend
+The frontend code could be [found here](https://github.com/sdzharkov/Tesla_Twilio_Frontend).
 
 ## Heroku Links
 Backend: https://tesla-twilio-app.herokuapp.com/
