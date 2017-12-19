@@ -31,7 +31,7 @@ module TeslaTwilio
     config.api_only = true
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'https://testla-twilio-frontend.herokuapp.com'
+        origins '*'
         resource '*', headers: :any, methods: %I[get post options]
       end
     end
