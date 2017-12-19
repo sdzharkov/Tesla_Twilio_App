@@ -21,6 +21,7 @@ gem 'redis', '~> 3.0'
 # gem 'bcrypt', '~> 3.1.7'
 gem "twilio-ruby"
 gem 'rack-cors'
+gem 'foreman'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
