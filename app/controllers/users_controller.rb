@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # skip_before_action :verify_authenticity_token
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :update_user]
 
   # GET /users
   def index
@@ -73,9 +73,8 @@ class UsersController < ApplicationController
         name: name
     }
 
-    if User.exists?(id: id)
+    if @user
       puts 'User exists'
-      @user = User.find(id)
       @user.update(user_params)
       send_text('Updated user: ' + print_user(@user), phone_number)
       render json: @user
