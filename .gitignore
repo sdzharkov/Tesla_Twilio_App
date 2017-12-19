@@ -17,3 +17,5 @@
 
 # Don't add environment variables
 .env
+.idea/
+dump.rdb
