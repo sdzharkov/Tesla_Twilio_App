@@ -1,24 +1,15 @@
-# README
+# Tesla Twilio Backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Provide realtime CRUD commands to the server with texts using the Twilio API, while displaying the results with websockets to the React frontend. 
 
-Things you may want to cover:
+Text a Twilio commands with the following type of commands and watch then appear on the frontend.
 
-* Ruby version
+Example CRUD Commands to text: 
+‘create – 1234 – Nikola Tesla’, 
+‘read – 1234’, 
+‘update – 1234 – Tesla Motors’, 
+‘delete – 1234’
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# Heroku Links
+Backend: https://tesla-twilio-app.herokuapp.com/
+Frontend: https://tesla-twilio-frontend.herokuapp.com/
